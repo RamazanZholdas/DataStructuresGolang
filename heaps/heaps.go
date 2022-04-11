@@ -2,7 +2,6 @@ package heaps
 
 import (
 	"errors"
-	"fmt"
 )
 
 type BinaryHeap struct {
@@ -24,18 +23,16 @@ func (h *BinaryHeap) ExtractMax() (int, error) {
 	}
 	max := h.Data[0]
 	h.Data = h.Data[1:]
-	h.topDownHeapify()
+	h.topDownHeapify(0)
 	index, ok := h.checkHeap()
 	if !ok {
-		h.fixHeap(index)
+		h.topDownHeapify(index)
 	}
 	return max, nil
 }
 
-func (h *BinaryHeap) topDownHeapify() {
+func (h *BinaryHeap) topDownHeapify(index int) {
 	var temp int
-	index := 0
-	fmt.Println("initial data", h.Data)
 	for {
 		if h.left(index) > h.Len()-1 {
 			break
@@ -52,7 +49,6 @@ func (h *BinaryHeap) topDownHeapify() {
 			h.Data[h.left(index)] = temp
 			index = h.left(index)
 		}
-		fmt.Println(h.Data)
 	}
 }
 
@@ -60,39 +56,16 @@ func (h *BinaryHeap) checkHeap() (int, bool) {
 	for i := 0; i < h.Len(); i++ {
 		if h.left(i) < h.Len() {
 			if h.Data[i] < h.Data[h.left(i)] {
-				fmt.Println("left child is smaller than parent")
 				return i, false
 			}
 		}
 		if h.right(i) < h.Len() {
 			if h.Data[i] < h.Data[h.right(i)] {
-				fmt.Println("right child is smaller than parent")
 				return i, false
 			}
 		}
 	}
 	return 0, true
-}
-
-func (h *BinaryHeap) fixHeap(index int) {
-	var temp int
-	for {
-		if h.left(index) > h.Len()-1 {
-			break
-		} else if h.Data[index] > h.Data[h.left(index)] && h.Data[index] > h.Data[h.right(index)] {
-			break
-		} else if h.Data[index] < h.Data[h.right(index)] {
-			temp = h.Data[index]
-			h.Data[index] = h.Data[h.right(index)]
-			h.Data[h.right(index)] = temp
-			index = h.right(index)
-		} else if h.Data[index] < h.Data[h.left(index)] {
-			temp = h.Data[index]
-			h.Data[index] = h.Data[h.left(index)]
-			h.Data[h.left(index)] = temp
-			index = h.left(index)
-		}
-	}
 }
 
 func (h *BinaryHeap) hepify() {
